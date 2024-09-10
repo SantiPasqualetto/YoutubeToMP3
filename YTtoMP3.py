@@ -15,7 +15,10 @@ except:
     exit()
 
 # Get the number of videos in the playlist
-length = pl.length
+try:    
+    length = pl.length
+except Exception as e:
+    print(f"Couldn't get the playlist length: {e}")
 
 # Create a folder to store the audio files
 os.makedirs(pl.title, exist_ok=True)
@@ -30,14 +33,18 @@ for video in pl.videos:
     try:    
         # Filter the video streams for getting just the audio file
         stream = video.streams.get_audio_only()
-
+        
         # Download the audio file
         filename = stream.download(mp3=True)
 
         if os.path.exists(filename):
             filesDownloaded += 1
+
     except Exception as e:
         print(f"Error downloading {video.title}: {e}")
 
-print(f"Downloaded {filesDownloaded} files out of {length} files.")
+if length != 0:
+    print(f"Downloaded {filesDownloaded} files out of {length} files.")
+
 print("Download complete!")
+input("Presione enter para cerrar...")
